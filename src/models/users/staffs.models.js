@@ -1,7 +1,7 @@
-import runQuery from "../helper/query.helper.js";
-import RunTransaction from "../helper/transactions.helper.js";
+import runQuery from "../../helper/query.helper.js";
+import RunTransaction from "../../helper/transactions.helper.js";
 
-const AdminModel = {
+const StaffModel = {
     create: (data) => {
         return RunTransaction(async (connection) => {
             const { organization_id, ...userFields } = data;
@@ -19,19 +19,19 @@ const AdminModel = {
             );
             const userId = userResult.insertId;
 
-            // 2. Insert into admins table
+            // 2. Insert into staffs table
             await connection.query(
-                "INSERT INTO admins (user_id) VALUES (?)",
-                [userId]
+                "INSERT INTO staffs (user_id, organization_id) VALUES (?, ?)",
+                [userId, organization_id]
             );
-            return { user_id: userId, ...userFields }
+           return { user_id: userId, ...userFields }
         });
     },
 
     view: (email) => {
         const query = email
-            ? "SELECT * FROM users u JOIN admins a ON a.user_id = u.user_id WHERE u.email = ?"
-            : "SELECT * FROM users u JOIN admins a ON a.user_id = u.user_id";
+            ? "SELECT * FROM users u JOIN staffs s ON s.user_id = u.user_id WHERE u.email = ?"
+            : "SELECT * FROM users u JOIN staffs s ON s.user_id = u.user_id";
         
         const params = email ? [email] : [];
         return runQuery(query, params);
@@ -39,7 +39,7 @@ const AdminModel = {
 
     update: (data) => {
         return RunTransaction(async (connection) => {
-            const { update, user_id, admin = false } = data;
+            const { update, user_id, staff = false } = data;
             const keys = Object.keys(update);
             const values = Object.values(update);
 
@@ -47,7 +47,7 @@ const AdminModel = {
                 throw new Error("No update fields provided");
             }
 
-            const table = admin ? "admins" : "users";
+            const table = staff ? "staffs" : "users";
             const query = `UPDATE ${table} SET ${keys.map(key => `${key} = ?`).join(", ")} WHERE user_id = ?`;
             
             await connection.query(query, [...values, user_id]);
@@ -58,7 +58,7 @@ const AdminModel = {
 
     delete: (user_id) => {
         return runQuery(`DELETE FROM users WHERE user_id = ?`, [user_id]);
-    },
+    }
 };
 
-export default AdminModel;
+export default StaffModel;

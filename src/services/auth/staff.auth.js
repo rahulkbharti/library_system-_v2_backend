@@ -1,6 +1,6 @@
 import express from "express";
 import bcrypt from "bcrypt";
-import StaffModel from "../../models/staffs.models.js";
+import StaffModel from "../../models/users/staffs.models.js";
 import logger from "../../utils/logger.js";
 import generateTokens from "../../utils/jwt.utils.js";
 

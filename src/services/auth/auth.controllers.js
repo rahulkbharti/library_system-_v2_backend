@@ -1,8 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
-import StudentModel from '../../models/student.models.js';
-import StaffModel from '../../models/staffs.models.js';
-import AdminModel from '../../models/admin.models.js';
+import StudentModel from '../../models/users/student.models.js';
+import StaffModel from '../../models/users/staffs.models.js';
+import AdminModel from '../../models/users/admin.models.js';
 
 import { sendOtpEmail, sendPasswordResetSuccessEmail } from '../../services/email/email.services.js';
 import logger from '../../utils/logger.js';

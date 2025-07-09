@@ -1,6 +1,6 @@
 import express from "express";
 import bcrypt from "bcrypt";
-import AdminModel from "../../models/admin.models.js";
+import AdminModel from "../../models/users/admin.models.js";
 import logger from "../../utils/logger.js";
 import generateTokens from "../../utils/jwt.utils.js";
 
@@ -42,7 +42,7 @@ router.post("/login", async (req, res) => {
     }
 
     const admin = await AdminModel.view(email);
-    // console.log("Admin Data:", admin);
+    console.log("Admin Data:", admin);
     
     if (!admin || admin.length === 0) {
         logger.warn(`Login attempt for non-existent admin: ${email}`);

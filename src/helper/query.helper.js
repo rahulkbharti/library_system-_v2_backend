@@ -1,13 +1,13 @@
-import db from '../utils/db.js';
-import logger from '../utils/logger.js';
-
-const runQuery = async (sql, params = []) => {
+// import logger from "../utils/logger";
+import db from "../utils/db.js"
+const runQuery = async (sql, params = [], connection = null) => {
     try {
-        const [rows] = await db.execute(sql, params);
+        const executor = connection || db;
+        const [rows] = await executor.execute(sql, params);
         return rows;
     } catch (error) {
-        logger.error(error.message);
-        return {error} // Return error with status code
+        // logger.error(error.message);
+        return { error: true, message: error.message };
     }
 };
 

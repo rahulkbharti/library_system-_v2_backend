@@ -1,5 +1,5 @@
 import express from "express";
-import StudentModel from "../../models/student.models.js";
+import StudentModel from "../../models/users/student.models.js";
 import bcrypt from "bcrypt";    
 import logger from "../../utils/logger.js";
 import generateTokens from "../../utils/jwt.utils.js";

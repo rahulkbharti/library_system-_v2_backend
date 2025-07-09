@@ -1,8 +1,8 @@
 import express from "express";
 import logger from "../../utils/logger.js";
-import StudentModel from "../../models/student.models.js";
-import StaffModel from "../../models/staffs.models.js";
-import AdminModel from "../../models/admin.models.js";
+import StudentModel from "../../models/users/student.models.js";
+import StaffModel from "../../models/users/staffs.models.js";
+import AdminModel from "../../models/users/admin.models.js";
 import verifyGoogleToken from "../../utils/google.utils.js";
 import generateTokens from "../../utils/jwt.utils.js";
 
