@@ -1,61 +1,39 @@
+import runQuery from "../../helper/query.helper.js";
+import RunTransaction from "../../helper/transactions.helper.js";
+
 const GroupPermissionsModel = {
-    add: async (permissionData) => {
-        return {
-            message: "Group permission added successfully {Dummy}",
-            permission: permissionData
-        };
+    create : (data)=>{
+        const keys = Object.keys(data);
+        const values = Object.values(data);
+        const query = `INSERT INTO group_permissions (${keys.join(", ")}) VALUES (${keys.map(() => "?").join(", ")})`;
+        return runQuery(query, values);
     },
-    view: async (permissionId) => {
-        if (permissionId) {
-            return [{
-                permission_id: permissionId,
-                group_id: 1,
-                resource: "dashboard",
-                can_view: true,
-                can_edit: false,
-                can_delete: false,
-                created_at: "2023-01-01"
-            }];
-        }
-        return [
-            {
-                permission_id: 1,
-                group_id: 1,
-                resource: "dashboard",
-                can_view: true,
-                can_edit: false,
-                can_delete: false,
-                created_at: "2023-01-01"
-            },
-            {
-                permission_id: 2,
-                group_id: 2,
-                resource: "settings",
-                can_view: true,
-                can_edit: true,
-                can_delete: false,
-                created_at: "2023-01-02"
+    view: (group_id) => {
+        const query = group_id
+            ? "SELECT * FROM group_permissions WHERE group_id = ?"
+            : "SELECT * FROM group_permissions";
+        
+        const params = group_id ? [group_id] : [];
+        return runQuery(query, params);
+    },
+    update: (data) => {
+        return RunTransaction(async (connection) => {
+            const { update, group_id } = data;
+            const keys = Object.keys(update);
+            const values = Object.values(update);
+
+            if (!keys.length) {
+                throw new Error("No update fields provided");
             }
-        ];
+            const query = `UPDATE group_permissions SET ${keys.map(key => `${key} = ?`).join(", ")} WHERE group_id = ?`;
+            const result = await runQuery(query, [...values, group_id]);
+
+            return result;
+        });
     },
-    update: async (permissionData) => {
-        if (!permissionData.permission_id) {
-            return { error: "Permission ID is required for update" };
-        }
-        return {
-            message: "Group permission updated successfully {Dummy}",
-            permission: permissionData
-        };
-    },
-    delete: async (permissionId) => {
-        if (!permissionId) {
-            return { error: "Permission ID is required for deletion" };
-        }
-        return {
-            message: "Group permission deleted successfully {Dummy}",
-            permission_id: permissionId
-        };
+    delete: (group_id) => {
+        return runQuery(`DELETE FROM group_permissions WHERE group_id = ?`, [group_id]);
     }
-};
+}
 
 export default GroupPermissionsModel;

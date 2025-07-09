@@ -1,64 +1,40 @@
-const OrganizationModel = {
-    add: async (orgData) => {
-        return {
-            message: "Organization added successfully {Dummy}",
-            organization: orgData
-        };
-    },
-    view: async (orgId) => {
-        if (orgId) {
-            return [{
-                org_id: orgId,
-                name: "Acme Corp",
-                description: "Sample organization",
-                industry: "Technology",
-                website: "https://acme.example.com",
-                status: "active",
-                created_at: "2023-01-01",
-                updated_at: "2023-01-01"
-            }];
-        }
-        return [
-            {
-                org_id: 1,
-                name: "Acme Corp",
-                description: "Technology solutions provider",
-                industry: "Technology",
-                website: "https://acme.example.com",
-                status: "active",
-                created_at: "2023-01-01",
-                updated_at: "2023-01-01"
-            },
-            {
-                org_id: 2,
-                name: "Globex Inc",
-                description: "Global manufacturing company",
-                industry: "Manufacturing",
-                website: "https://globex.example.com",
-                status: "active",
-                created_at: "2023-01-05",
-                updated_at: "2023-02-15"
-            }
-        ];
-    },
-    update: async (orgData) => {
-        if (!orgData.org_id) {
-            return { error: "Organization ID is required for update" };
-        }
-        return {
-            message: "Organization updated successfully {Dummy}",
-            organization: orgData
-        };
-    },
-    delete: async (orgId) => {
-        if (!orgId) {
-            return { error: "Organization ID is required for deletion" };
-        }
-        return {
-            message: "Organization deleted successfully {Dummy}",
-            org_id: orgId
-        };
-    }
-};
+import runQuery from "../../helper/query.helper.js";
+import RunTransaction from "../../helper/transactions.helper.js";
 
-export default OrganizationModel;
+const OrganizationsModel = {
+    create : (data)=>{
+        const keys = Object.keys(data);
+        const values = Object.values(data);
+        const query = `INSERT INTO organizations (${keys.join(", ")}) VALUES (${keys.map(() => "?").join(", ")})`;
+        return runQuery(query, values);
+    },
+    view: (organization_id) => {
+        const query = organization_id
+            ? "SELECT * FROM organizations WHERE organization_id = ?"
+            : "SELECT * FROM organizations";
+        
+        const params = organization_id ? [organization_id] : [];
+        return runQuery(query, params);
+    },
+    // Check : TODO: check for update if not then return in contoller
+    update: (data) => {
+        return RunTransaction(async (connection) => {
+            const { update, organization_id } = data;
+            const keys = Object.keys(update);
+            const values = Object.values(update);
+
+            if (!keys.length) {
+                throw new Error("No update fields provided");
+            }
+            const query = `UPDATE organizations SET ${keys.map(key => `${key} = ?`).join(", ")} WHERE organization_id = ?`;
+            const result = await runQuery(query, [...values, organization_id]);
+
+            return result;
+        });
+    },
+    delete: (organization_id) => {
+        return runQuery(`DELETE FROM organizations WHERE organization_id = ?`, [organization_id]);
+    }
+}
+
+export default OrganizationsModel;
