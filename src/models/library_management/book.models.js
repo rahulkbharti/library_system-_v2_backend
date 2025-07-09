@@ -3,28 +3,37 @@ import RunTransaction from "../../helper/transactions.helper.js";
 
 const BooksModel = {
     create : (data)=>{
+        const keys = Object.keys(data);
+        const values = Object.values(data);
+        const query = `INSERT INTO books (${keys.join(", ")}) VALUES (${keys.map(() => "?").join(", ")})`;
+        return runQuery(query, values);
+    },
+    view: (book_id) => {
+        const query = book_id
+            ? "SELECT * FROM books WHERE book_id = ?"
+            : "SELECT * FROM books";
+        
+        const params = book_id ? [book_id] : [];
+        return runQuery(query, params);
+    },
+    update: (data) => {
         return RunTransaction(async (connection) => {
-            const { organization_id, ...bookFields } = data;
-            const keys = Object.keys(bookFields);
-            const values = Object.values(bookFields);
+            const { update, book_id } = data;
+            const keys = Object.keys(update);
+            const values = Object.values(update);
 
             if (!keys.length) {
-                throw new Error("No book fields provided");
+                throw new Error("No update fields provided");
             }
-            // 1. Insert into books table
-            const query1 = `INSERT INTO books (${keys.join(", ")}) VALUES (${keys.map(() => "?").join(", ")})`;
-            const bookResult = await runQuery(query1, values);
-            const bookId = bookResult.insertId;
+            const query = `UPDATE books SET ${keys.map(key => `${key} = ?`).join(", ")} WHERE book_id = ?`;
+            const result = await runQuery(query, [...values, book_id]);
 
-            // 2. Insert into organizations_books table
-            const query2 = "INSERT INTO organizations_books (book_id, organization_id) VALUES (?, ?)";
-            await runQuery(query2, [bookId, organization_id]);
-            
-            return { book_id: bookId, ...bookFields };
+            return result;
         });
-        
     },
-
+    delete: (book_id) => {
+        return runQuery(`DELETE FROM books WHERE book_id = ?`, [book_id]);
+    }
 }
 
 export default BooksModel;

@@ -3,4 +3,8 @@ import BookControllers from "../../controllers/library_managment/book.controller
 const router = express.Router();
 
 router.post("/add", BookControllers.add);
+router.get("/books", BookControllers.view);
+router.put("/update", BookControllers.update); 
+router.delete("/", BookControllers.delete);
+
 export default router;
