@@ -1,11 +1,32 @@
 import express from "express";
 import PermissionGroupController from "../../controllers/roles_persmissions/permissions_groups.controllers.js";
 import authenticate from "../../middlewares/authenticate.middleware.js";
+import authorize from "../../middlewares/authorized.middlerware.js";
+import { GROUP_PERMISSION } from "../../constants/permissions.constants.js";
 const router = express.Router();
-
-router.post("/",authenticate, PermissionGroupController.add);
-router.get("/",authenticate, PermissionGroupController.view);
-router.put("/",authenticate, PermissionGroupController.update);  
-router.delete("/",authenticate, PermissionGroupController.delete);
+router.post(
+    "/",
+    authenticate,
+    authorize(GROUP_PERMISSION.ADD_GROUP),
+    PermissionGroupController.add
+);
+router.get(
+    "/",
+    authenticate,
+    authorize(GROUP_PERMISSION.VIEW_GROUP),
+    PermissionGroupController.view
+);
+router.put(
+    "/",
+    authenticate,
+    authorize(GROUP_PERMISSION.EDIT_GROUP),
+    PermissionGroupController.update
+);
+router.delete(
+    "/",
+    authenticate,
+    authorize(GROUP_PERMISSION.DELETE_GROUP),
+    PermissionGroupController.delete
+);
 
 export default router;
