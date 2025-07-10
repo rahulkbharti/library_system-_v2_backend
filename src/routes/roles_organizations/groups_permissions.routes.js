@@ -7,25 +7,25 @@ const router = express.Router();
 router.post(
     "/",
     authenticate,
-    authorize(GROUP_PERMISSION.ADD_GROUP),
+    authorize(GROUP_PERMISSION.ADD_GROUP.code),
     PermissionGroupController.add
 );
 router.get(
     "/",
     authenticate,
-    authorize(GROUP_PERMISSION.VIEW_GROUP),
+    authorize(GROUP_PERMISSION.VIEW_GROUP.code),
     PermissionGroupController.view
 );
 router.put(
     "/",
     authenticate,
-    authorize(GROUP_PERMISSION.EDIT_GROUP),
+    authorize(GROUP_PERMISSION.EDIT_GROUP.code),
     PermissionGroupController.update
 );
 router.delete(
     "/",
     authenticate,
-    authorize(GROUP_PERMISSION.DELETE_GROUP),
+    authorize(GROUP_PERMISSION.DELETE_GROUP.code),
     PermissionGroupController.delete
 );
 

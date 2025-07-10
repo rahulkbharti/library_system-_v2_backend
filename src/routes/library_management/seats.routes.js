@@ -5,9 +5,9 @@ import authorize from "../../middlewares/authorized.middlerware.js";
 import { SEAT } from "../../constants/permissions.constants.js";
 const router = express.Router();
 
-router.post("/", authenticate, authorize(SEAT.ADD_SEAT), SeatsController.add);
-router.get("/", authenticate, authorize(SEAT.VIEW_SEAT), SeatsController.view);
-router.put("/", authenticate, authorize(SEAT.EDIT_SEAT), SeatsController.update);
-router.delete("/", authenticate, authorize(SEAT.DELETE_SEAT), SeatsController.delete);
+router.post("/", authenticate, authorize(SEAT.ADD_SEAT.code), SeatsController.add);
+router.get("/", authenticate, authorize(SEAT.VIEW_SEAT.code), SeatsController.view);
+router.put("/", authenticate, authorize(SEAT.EDIT_SEAT.code), SeatsController.update);
+router.delete("/", authenticate, authorize(SEAT.DELETE_SEAT.code), SeatsController.delete);
 
 export default router;
