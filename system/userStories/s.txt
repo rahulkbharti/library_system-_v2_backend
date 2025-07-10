@@ -1,0 +1,4 @@
+Type of users:
+1. Admin : having All Permissions
+2. Staff : having group Permissions
+3. Student : No Specific Permissions

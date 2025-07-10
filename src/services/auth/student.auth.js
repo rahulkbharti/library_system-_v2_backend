@@ -54,8 +54,9 @@ router.post("/login", async (req, res) => {
         logger.warn(`Failed login attempt for student: ${email}`);
         return res.status(401).json({ message: "Invalid credentials" });
     }
-
-    const { accessToken, refreshToken } = generateTokens(email);
+    
+    // console.log(studentData);
+    const { accessToken, refreshToken } = generateTokens(email,studentData.organization_id);
     
     logger.info(`Student login successful: ${email}`);
     return res.status(200).json({

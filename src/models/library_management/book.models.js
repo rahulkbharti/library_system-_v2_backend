@@ -8,14 +8,27 @@ const BooksModel = {
         const query = `INSERT INTO books (${keys.join(", ")}) VALUES (${keys.map(() => "?").join(", ")})`;
         return runQuery(query, values);
     },
-    view: (book_id) => {
-        const query = book_id
-            ? "SELECT * FROM books WHERE book_id = ?"
-            : "SELECT * FROM books";
+    view: (book_id, organization_id = null) => {
+    let query = "select b.*,bc.organization_id from books b inner join book_copies bc on b.book_id = bc.book_id ";
+    const params = [];
+    
+    if (book_id || organization_id) {
+        query += " WHERE";
         
-        const params = book_id ? [book_id] : [];
-        return runQuery(query, params);
-    },
+        if (book_id) {
+            query += " book_id = ?";
+            params.push(book_id);
+        }
+        
+        if (organization_id) {
+            if (book_id) query += " AND";
+            query += " organization_id = ?";
+            params.push(organization_id);
+        }
+    }
+    
+    return runQuery(query, params);
+},
     update: (data) => {
         return RunTransaction(async (connection) => {
             const { update, book_id } = data;
@@ -34,6 +47,8 @@ const BooksModel = {
     delete: (book_id) => {
         return runQuery(`DELETE FROM books WHERE book_id = ?`, [book_id]);
     }
+    // others Methods
+    
 }
 
 export default BooksModel;

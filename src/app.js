@@ -4,6 +4,7 @@ import authRouter from "./routes/auth.routes.js"
 import libraryMangement from "./routes/library_mangment.routes.js";
 import organizationsRouter from "./routes/organizations.routes.js";
 import rolesPermissionsRouter from "./routes/roles_permissions.routes.js";
+import feesPaymentRouter from "./routes/fees_payments.routes.js";
 
 const app = express();
 app.use(express.json());
@@ -21,5 +22,5 @@ app.use('/auth',authRouter);
 app.use('/library-management', libraryMangement);
 app.use('/organizations', organizationsRouter);
 app.use('/roles', rolesPermissionsRouter);
-
+app.use("/fees", feesPaymentRouter);
 export default app;

@@ -14,7 +14,7 @@ const GroupController = {
   view: async (req, res) => {
     const bookId = req.query.id;
    
-    const result = await GroupModel.view(bookId);
+    const result = await GroupModel.view(bookId,req.organization_id);
     if (result.error) {
       return res.status(404).json({ error: result.message });
     }

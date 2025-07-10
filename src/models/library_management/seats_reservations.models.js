@@ -2,18 +2,31 @@ import runQuery from "../../helper/query.helper.js";
 import RunTransaction from "../../helper/transactions.helper.js";
 
 const SeatsReservations = {
-    create : (data)=>{
+    create: (data) => {
         const keys = Object.keys(data);
         const values = Object.values(data);
         const query = `INSERT INTO seat_reservations (${keys.join(", ")}) VALUES (${keys.map(() => "?").join(", ")})`;
         return runQuery(query, values);
     },
-    view: (reservation_id) => {
-        const query = reservation_id
-            ? "SELECT * FROM seat_reservations WHERE reservation_id = ?"
-            : "SELECT * FROM seat_reservations";
-        
-        const params = reservation_id ? [reservation_id] : [];
+    view: (reservation_id, organization_id = null) => {
+        let query = "select * from seat_reservations sr inner join seats s ON s.seat_id = sr.seat_id ";
+        const params = [];
+
+        if (reservation_id || organization_id) {
+            query += " WHERE";
+
+            if (reservation_id) {
+                query += " reservation_id = ?";
+                params.push(reservation_id);
+            }
+
+            if (organization_id) {
+                if (reservation_id) query += " AND";
+                query += " organization_id = ?";
+                params.push(organization_id);
+            }
+        }
+
         return runQuery(query, params);
     },
     update: (data) => {

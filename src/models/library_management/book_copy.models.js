@@ -2,18 +2,31 @@ import runQuery from "../../helper/query.helper.js";
 import RunTransaction from "../../helper/transactions.helper.js";
 
 const BookCopyModel = {
-    create : (data)=>{
+    create: (data) => {
         const keys = Object.keys(data);
         const values = Object.values(data);
         const query = `INSERT INTO book_copies (${keys.join(", ")}) VALUES (${keys.map(() => "?").join(", ")})`;
         return runQuery(query, values);
     },
-    view: (copy_id) => {
-        const query = copy_id
-            ? "SELECT * FROM book_copies WHERE copy_id = ?"
-            : "SELECT * FROM book_copies";
-        
-        const params = copy_id ? [copy_id] : [];
+    view: (copy_id, organization_id = null) => {
+        let query = "SELECT * FROM book_copies";
+        const params = [];
+
+        if (copy_id || organization_id) {
+            query += " WHERE";
+
+            if (copy_id) {
+                query += " copy_id = ?";
+                params.push(copy_id);
+            }
+
+            if (organization_id) {
+                if (copy_id) query += " AND";
+                query += " organization_id = ?";
+                params.push(organization_id);
+            }
+        }
+
         return runQuery(query, params);
     },
     update: (data) => {

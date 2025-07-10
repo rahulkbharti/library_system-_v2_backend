@@ -14,15 +14,15 @@ const PermissionGroupController = {
   view: async (req, res) => {
     const bookId = req.query.id;
    
-    const result = await GroupPermissionsModel.view(bookId);
+    const result = await GroupPermissionsModel.view(bookId,req.organization_id);
     if (result.error) {
       return res.status(404).json({ error: result.message });
     }
     if(result.length === 0) {
-      return res.status(404).json({ mess: "No Group Permission found" });
+      return res.status(404).json({ message: "No Group Permission found" });
     }
     if(bookId) return res.status(200).json({...result[0] });
-    return res.status(200).json({ grops: result});
+    return res.status(200).json({ groups: result});
   },
   update: async (req, res) => {
     const data = req.body;

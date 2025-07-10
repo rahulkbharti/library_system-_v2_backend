@@ -43,7 +43,7 @@ router.post("/continue", AccountSetup, async (req, res) => {
     // console.log("User Info:", user);
     if (user.length > 0) {
         // Generate tokens and return response
-        const { accessToken, refreshToken } = generateTokens(user.email);
+        const { accessToken, refreshToken } = generateTokens(user.email,user.organization_id);
         const { password, ...userData } = user[0];
 
         logger.info(`User ${user.email} logged in successfully`);
