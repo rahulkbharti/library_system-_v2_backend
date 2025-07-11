@@ -1,7 +1,7 @@
 import express from "express";
 import BookControllers from "../../controllers/library_managment/book.controllers.js";
 import authenticate from "../../middlewares/authenticate.middleware.js";
-import authorize from "../../middlewares/authorized.middlerware.js";
+import authorize from "../../middlewares/authorize.middlerware.js";
 import { BOOK } from "../../constants/permissions.constants.js";
 const router = express.Router();
 
