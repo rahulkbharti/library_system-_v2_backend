@@ -57,7 +57,10 @@ const StudentModel = {
     },
 
     delete: (user_id) => {
+<<<<<<< HEAD
         // BUG: Without user_id , or if user is not found, I t will not make any error
+=======
+>>>>>>> 7b891dc824a7f14d9e61a573d29c086dec11ada6
         return runQuery(`DELETE FROM students WHERE user_id = ?`, [user_id]);
     }
 };
