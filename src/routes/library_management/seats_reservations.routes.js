@@ -1,7 +1,7 @@
 import express from "express";
 import SeatReservationController from "../../controllers/library_managment/seat_reservations.contoller.js";
 import authenticate from "../../middlewares/authenticate.middleware.js";
-import authorize from "../../middlewares/authorized.middlerware.js";
+import authorize from "../../middlewares/authorize.middlerware.js";
 import { SEAT_RESERVATION } from "../../constants/permissions.constants.js";
 const router = express.Router();
 router.post(

@@ -1,7 +1,7 @@
 import express from "express";
 import BookCopyController from "../../controllers/library_managment/book_copies.controllers.js";
 import authenticate from "../../middlewares/authenticate.middleware.js";
-import authorize from "../../middlewares/authorized.middlerware.js";
+import authorize from "../../middlewares/authorize.middlerware.js";
 import { BOOK_COPY } from "../../constants/permissions.constants.js";
 
 const router = express.Router();

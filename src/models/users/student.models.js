@@ -57,7 +57,7 @@ const StudentModel = {
     },
 
     delete: (user_id) => {
-        return runQuery(`DELETE FROM users WHERE user_id = ?`, [user_id]);
+        return runQuery(`DELETE FROM students WHERE user_id = ?`, [user_id]);
     }
 };
 

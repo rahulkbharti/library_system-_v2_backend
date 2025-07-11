@@ -31,7 +31,7 @@ const authorize = (requiredPermission) => {
           code: 'UNAUTHENTICATED'
         });
       }
-
+     
       const hasPermission = await CheckPermission(requiredPermission, req.user.email);
       
       if (!hasPermission) {
