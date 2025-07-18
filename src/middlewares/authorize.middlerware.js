@@ -1,5 +1,10 @@
 import runQuery from "../helper/query.helper.js";
 
+const AdminPermission = async (email) => {
+
+}
+
+
 const CheckPermission = async (permission, email) => {
   const query = `
     SELECT EXISTS (
@@ -24,6 +29,10 @@ const CheckPermission = async (permission, email) => {
 
 const authorize = (requiredPermission) => {
   return async (req, res, next) => {
+    //  TODO: Ensure that admin will have only his organization permissions
+    if(req.user.role === "admin") {
+      return next(); // Admins are authorized by default
+    }
     try {
       if (!req.user) {
         return res.status(401).json({

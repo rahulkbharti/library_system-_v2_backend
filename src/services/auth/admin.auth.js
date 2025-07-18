@@ -42,7 +42,7 @@ router.post("/login", async (req, res) => {
     }
 
     const admin = await AdminModel.view(email);
-    console.log("Admin Data:", admin);
+    // console.log("Admin Data:", admin);
     
     if (!admin || admin.length === 0) {
         logger.warn(`Login attempt for non-existent admin: ${email}`);
@@ -57,7 +57,7 @@ router.post("/login", async (req, res) => {
         return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const { accessToken, refreshToken } = generateTokens(email);
+    const { accessToken, refreshToken } = generateTokens(email,0,"admin");
     
     return res.status(200).json({
         accessToken,

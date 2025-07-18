@@ -17,7 +17,7 @@ const AccountSetup = async (req, res, next) => {
     userInfo.password = "Not_Set"; // Ensure password is not included in userInfo
     userInfo.username = userInfo.email.split("@")[0]; // Extract username from email
     userInfo.phone = null; // Set is_active to true by default
-
+    
     if (role === "student") {
         req.model = StudentModel;
         // userInfo.enrollment_number = 23123434122; // Example enrollment number
@@ -39,11 +39,12 @@ const AccountSetup = async (req, res, next) => {
 // Can Handle Bothe User Registration and Update
 router.post("/continue", AccountSetup, async (req, res) => {
     const { userInfo, model } = req; // student, staff, admin
+    const {role} = req.body; // student, staff, admin
     const user = await req.model.view(userInfo.email);
     // console.log("User Info:", user);
     if (user.length > 0) {
         // Generate tokens and return response
-        const { accessToken, refreshToken } = generateTokens(user.email,user.organization_id);
+        const { accessToken, refreshToken } = generateTokens(user.email,user.organization_id,role);
         const { password, ...userData } = user[0];
 
         logger.info(`User ${user.email} logged in successfully`);
@@ -66,7 +67,7 @@ router.post("/continue", AccountSetup, async (req, res) => {
             }
             return res.status(500).json(result.error || { message: "Failed to register user" });
         }
-        const { accessToken, refreshToken } = generateTokens(userInfo.email);
+        const { accessToken, refreshToken } = generateTokens(userInfo.email,userInfo.organization_id,role);
         const { password, ...userData } = userInfo;
 
         logger.info(`User ${userInfo.email} registered successfully`);

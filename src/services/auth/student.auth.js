@@ -56,7 +56,7 @@ router.post("/login", async (req, res) => {
     }
     
     // console.log(studentData);
-    const { accessToken, refreshToken } = generateTokens(email,studentData.organization_id);
+    const { accessToken, refreshToken } = generateTokens(email,studentData.organization_id, "student");
     
     logger.info(`Student login successful: ${email}`);
     return res.status(200).json({
