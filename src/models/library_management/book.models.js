@@ -11,21 +11,24 @@ const BooksModel = {
     view: (book_id, organization_id = null) => {
     let query = "select * from books";
     const params = [];
-    
-    if (book_id || organization_id) {
-        query += " WHERE";
-        
-        if (book_id) {
-            query += " book_id = ?";
-            params.push(book_id);
-        }
-        
-        if (organization_id) {
-            if (book_id) query += " AND";
-            query += " organization_id = ?";
-            params.push(organization_id);
-        }
+    if(book_id){
+        query+= " WHERE book_id = ?";
+        params.push(book_id);
     }
+    // if (book_id || organization_id) {
+    //     query += " WHERE";
+        
+    //     if (book_id) {
+    //         query += " book_id = ?";
+    //         params.push(book_id);
+    //     }
+        
+    //     if (organization_id) {
+    //         if (book_id) query += " AND";
+    //         query += " organization_id = ?";
+    //         params.push(organization_id);
+    //     }
+    // }
     
     return runQuery(query, params);
 },
