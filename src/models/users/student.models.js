@@ -28,12 +28,29 @@ const StudentModel = {
         });
     },
 
-    view: (email) => {
-        const query = email
-            ? "SELECT * FROM users u JOIN students s ON s.user_id = u.user_id WHERE u.email = ?"
-            : "SELECT * FROM users u JOIN students s ON s.user_id = u.user_id";
-        
-        const params = email ? [email] : [];
+    view: (email, organization_ids = []) => {
+        let query = `
+            SELECT * 
+            FROM users u 
+            JOIN students s ON s.user_id = u.user_id
+        `;
+        const params = [];
+        const conditions = [];
+
+        if (email) {
+            conditions.push("u.email = ?");
+            params.push(email);
+        }
+
+        if (organization_ids.length > 0) {
+            conditions.push(`s.organization_id IN (${organization_ids.map(() => "?").join(",")})`);
+            params.push(...organization_ids);
+        }
+
+        if (conditions.length > 0) {
+            query += " WHERE " + conditions.join(" AND ");
+        }
+
         return runQuery(query, params);
     },
 
@@ -55,10 +72,8 @@ const StudentModel = {
             return update
         });
     },
-
     delete: (user_id) => {
         // BUG: Without user_id , or if user is not found, I t will not make any error
-
         return runQuery(`DELETE FROM students WHERE user_id = ?`, [user_id]);
     }
 };

@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import AdminModel from "../../models/users/admin.models.js";
 import logger from "../../utils/logger.js";
 import generateTokens from "../../utils/jwt.utils.js";
+import OrganizationsModel from "../../models/organizations/orgnizations.models.js";
 
 const router = express.Router();
 
@@ -42,8 +43,13 @@ router.post("/login", async (req, res) => {
     }
 
     const admin = await AdminModel.view(email);
-    // console.log("Admin Data:", admin);
-    
+    // const organization_ids = await OrganizationsModel.view()
+    // console.log("Admin Data:", admin[0].admin_id);
+    const organization_result = await OrganizationsModel.view(admin[0].admin_id);
+    const organization_ids = organization_result.map(org => org.organization_id);
+
+    // console.log(organization_ids);
+
     if (!admin || admin.length === 0) {
         logger.warn(`Login attempt for non-existent admin: ${email}`);
         return res.status(401).json({ message: "Invalid credentials" });
@@ -57,7 +63,7 @@ router.post("/login", async (req, res) => {
         return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const { accessToken, refreshToken } = generateTokens(email,0,"admin");
+    const { accessToken, refreshToken } = generateTokens(email, organization_ids, "admin");
     
     return res.status(200).json({
         accessToken,

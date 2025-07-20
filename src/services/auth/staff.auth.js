@@ -52,8 +52,8 @@ router.post("/login", async (req, res) => {
         return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const { accessToken, refreshToken } = generateTokens(email, staffData.organization_id, "staff");
-    
+    const { accessToken, refreshToken } = generateTokens(email, [staffData.organization_id], "staff");
+
     return res.status(200).json({
         accessToken,
         refreshToken,

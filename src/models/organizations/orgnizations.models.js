@@ -8,12 +8,12 @@ const OrganizationsModel = {
         const query = `INSERT INTO organizations (${keys.join(", ")}) VALUES (${keys.map(() => "?").join(", ")})`;
         return runQuery(query, values);
     },
-    view: (organization_id) => {
-        const query = organization_id
-            ? "SELECT * FROM organizations WHERE organization_id = ?"
+    view: (created_by_admin) => {
+        const query = created_by_admin
+            ? "SELECT * FROM organizations WHERE created_by_admin = ?"
             : "SELECT * FROM organizations";
         
-        const params = organization_id ? [organization_id] : [];
+        const params = created_by_admin ? [created_by_admin] : [];
         return runQuery(query, params);
     },
     // Check : TODO: check for update if not then return in contoller

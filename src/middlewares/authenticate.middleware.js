@@ -28,7 +28,8 @@ const authenticate = async (req, res, next) => {
     
     // Attach user to request
     req.user = decoded;
-    req.organization_id = decoded.organization_id;
+    req.organization_ids = decoded.organization_ids;
+    console.log("req.organization_ids:",   req.organization_ids);
     
     next();
   } catch (error) {

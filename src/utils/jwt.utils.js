@@ -7,16 +7,16 @@ dotenv.config({
 
 const SECRET_KEY = process.env.SECRET_KEY || "access-secret";
 const REFRESH_SECRET = process.env.REFRESH_SECRET || "refresh-secret";
-const TOKEN_EXPIRY = "30s";
+const TOKEN_EXPIRY = "1d";
 const REFRESH_EXPIRY = "1d";
 
 // Helper functions
-const generateTokens = (email, organization_id = null, role = null) => {
-  const accessToken = jwt.sign({ email, organization_id, role}, SECRET_KEY, {
+const generateTokens = (email, organization_ids = [], role = null) => {
+  const accessToken = jwt.sign({ email, organization_ids, role}, SECRET_KEY, {
     expiresIn: TOKEN_EXPIRY,
   });
   // TODO: If you login on different device with same email may problem , because with same email same refresh token will generate and may casuses problem in storing in database;
-  const refreshToken = jwt.sign({ email, organization_id, role }, REFRESH_SECRET, {
+  const refreshToken = jwt.sign({ email, organization_ids, role }, REFRESH_SECRET, {
     expiresIn: REFRESH_EXPIRY,
   });
   // refreshTokens.push(refreshToken);
@@ -33,7 +33,7 @@ export const regenerateTokens = (refreshToken) => {
     if (err) return { error: "Token verification failed" };
     // console.log("Decoded Refresh Token", decoded);
     const accessToken = jwt.sign(
-      { email: decoded.email, organization_id: decoded.organization_id, role: decoded.role },
+      { email: decoded.email, organization_ids: decoded.organization_ids, role: decoded.role },
       SECRET_KEY,
       {
         expiresIn: TOKEN_EXPIRY,

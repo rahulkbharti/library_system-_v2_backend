@@ -1,10 +1,11 @@
 import express from "express";
 import FeesController from "../../controllers/fees_payments/fees.controller.js";
+import authenticate from "../../middlewares/authenticate.middleware.js";
 
 const router = express.Router();
-router.post("/", FeesController.add);
-router.get("/", FeesController.view);
-router.put("/", FeesController.update);
-router.delete("/", FeesController.delete);
+router.post("/", authenticate, FeesController.add);
+router.get("/", authenticate, FeesController.view);
+router.put("/", authenticate, FeesController.update);
+router.delete("/", authenticate, FeesController.delete);
 
 export default router;

@@ -13,8 +13,8 @@ const StudentController = {
   },
   view: async (req, res) => {
     const student_id = req.query.id;
-   
-    const result = await StudentModel.view(student_id);
+
+    const result = await StudentModel.view(student_id, req.organization_ids);
     if (result.error) {
       return res.status(404).json({ error: result.error });
     }

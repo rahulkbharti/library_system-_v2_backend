@@ -13,7 +13,7 @@ const AdminController = {
   },
   view: async (req, res) => {
     const bookId = req.query.id;
-   
+
     const result = await AdminModel.view(bookId);
     if (result.error) {
       return res.status(404).json({ error: result.message });

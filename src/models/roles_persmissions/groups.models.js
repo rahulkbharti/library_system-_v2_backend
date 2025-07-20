@@ -2,29 +2,33 @@ import runQuery from "../../helper/query.helper.js";
 import RunTransaction from "../../helper/transactions.helper.js";
 
 const GroupModel = {
-    create : (data)=>{
+  create: (data) => {
     const keys = Object.keys(data);
     const values = Object.values(data);
-        const query = `INSERT INTO \`groups\` (${keys.join(", ")}) VALUES (${keys.map(() => "?").join(", ")})`;
+    const query = `INSERT INTO \`groups\` (${keys.join(", ")}) VALUES (${keys
+      .map(() => "?")
+      .join(", ")})`;
     return runQuery(query, values);
   },
-  view: (id, organization_id = null) => {
+  view: (id, organization_ids = []) => {
     let query = "SELECT * FROM `groups`";
     const params = [];
+    const conditions = [];
 
-    if (id || organization_id) {
-      query += " WHERE";
+    if (id) {
+      conditions.push("id = ?");
+      params.push(id);
+    }
 
-      if (id) {
-        query += " id = ?";
-        params.push(id);
-      }
+    if (organization_ids.length > 0) {
+      conditions.push(
+        `organization_id IN (${organization_ids.map(() => "?").join(",")})`
+      );
+      params.push(...organization_ids);
+    }
 
-      if (organization_id) {
-        if (id) query += " AND";
-        query += " organization_id = ?";
-        params.push(organization_id);
-      }
+    if (conditions.length > 0) {
+      query += " WHERE " + conditions.join(" AND ");
     }
 
     return runQuery(query, params);
@@ -38,7 +42,9 @@ const GroupModel = {
       if (!keys.length) {
         throw new Error("No update fields provided");
       }
-            const query = `UPDATE \`groups\` SET ${keys.map(key => `${key} = ?`).join(", ")} WHERE id = ?`;
+      const query = `UPDATE \`groups\` SET ${keys
+        .map((key) => `${key} = ?`)
+        .join(", ")} WHERE id = ?`;
       const result = await runQuery(query, [...values, id]);
 
       return result;
@@ -46,7 +52,7 @@ const GroupModel = {
   },
   delete: (id) => {
     return runQuery(`DELETE FROM \`groups\` WHERE id = ?`, [id]);
-    }
-}
+  },
+};
 
 export default GroupModel;

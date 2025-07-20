@@ -10,28 +10,31 @@ const MemberFeeModel = {
       .join(", ")})`;
     return runQuery(query, values);
   },
-  view: (student_fee_id, organization_id = null) => {
-    let query =
-      "select * from member_fees mf inner join students s on s.user_id = mf.student_id ";
+  view: (student_fee_id, organization_ids = []) => {
+    let query = `
+        SELECT * 
+        FROM member_fees mf 
+        INNER JOIN students s ON s.user_id = mf.student_id
+    `;
     const params = [];
+    const conditions = [];
 
-    if (student_fee_id || organization_id) {
-      query += " WHERE";
-
-      if (student_fee_id) {
-        query += " student_fee_id = ?";
+    if (student_fee_id) {
+        conditions.push("mf.student_fee_id = ?");
         params.push(student_fee_id);
-      }
+    }
 
-      if (organization_id) {
-        if (student_fee_id) query += " AND";
-        query += " organization_id = ?";
-        params.push(organization_id);
-      }
+    if (organization_ids.length > 0) {
+        conditions.push(`s.organization_id IN (${organization_ids.map(() => "?").join(",")})`);
+        params.push(...organization_ids);
+    }
+
+    if (conditions.length > 0) {
+        query += " WHERE " + conditions.join(" AND ");
     }
 
     return runQuery(query, params);
-  },
+},
   update: (data) => {
     return RunTransaction(async (connection) => {
       const { update, student_fee_id } = data;

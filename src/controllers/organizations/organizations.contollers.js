@@ -12,16 +12,16 @@ const OrganizationController = {
       .json({ message: "Organization added successfully", book: result });
   },
   view: async (req, res) => {
-    const bookId = req.query.id;
+    const created_by_admin = req.query.id;
    
-    const result = await OrganizationsModel.view(bookId);
+    const result = await OrganizationsModel.view(created_by_admin);
     if (result.error) {
       return res.status(404).json({ error: result.message });
     }
     if(result.length === 0) {
       return res.status(404).json({ mess: "No Organization found" });
     }
-    if(bookId) return res.status(200).json({...result[0] });
+    // if(created_by_admin) return res.status(200).json({...result[0] });
     return res.status(200).json({ organizations: result});
   },
   update: async (req, res) => {

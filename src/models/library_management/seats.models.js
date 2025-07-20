@@ -10,23 +10,25 @@ const SeatsModel = {
       .join(", ")})`;
     return runQuery(query, values);
   },
-  view: (seat_id, organization_id = null) => {
+  view: (seat_id, organization_ids = []) => {
     let query = "SELECT * FROM seats";
     const params = [];
+    const conditions = [];
 
-    if (seat_id || organization_id) {
-      query += " WHERE";
+    if (seat_id) {
+      conditions.push("seat_id = ?");
+      params.push(seat_id);
+    }
 
-      if (seat_id) {
-        query += " seat_id = ?";
-        params.push(seat_id);
-      }
+    if (organization_ids.length > 0) {
+      conditions.push(
+        `organization_id IN (${organization_ids.map(() => "?").join(",")})`
+      );
+      params.push(...organization_ids);
+    }
 
-      if (organization_id) {
-        if (seat_id) query += " AND";
-        query += " organization_id = ?";
-        params.push(organization_id);
-      }
+    if (conditions.length > 0) {
+      query += " WHERE " + conditions.join(" AND ");
     }
 
     return runQuery(query, params);

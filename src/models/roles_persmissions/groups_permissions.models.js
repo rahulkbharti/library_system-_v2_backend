@@ -10,23 +10,29 @@ const GroupPermissionsModel = {
     )}) VALUES (${keys.map(() => "?").join(", ")})`;
     return runQuery(query, values);
   },
-  view: (group_id, organization_id = null) => {
-    let query = "select gp.*, g.organization_id from group_permissions gp inner join `groups` g on g.id = gp.group_id ";
+  view: (group_id, organization_ids = []) => {
+    let query = `
+        SELECT gp.*, g.organization_id 
+        FROM group_permissions gp 
+        INNER JOIN \`groups\` g ON g.id = gp.group_id
+    `;
     const params = [];
+    const conditions = [];
 
-    if (group_id || organization_id) {
-      query += " WHERE";
+    if (group_id) {
+      conditions.push("gp.group_id = ?");
+      params.push(group_id);
+    }
 
-      if (group_id) {
-        query += " gp.group_id = ?";
-        params.push(group_id);
-      }
+    if (organization_ids.length > 0) {
+      conditions.push(
+        `g.organization_id IN (${organization_ids.map(() => "?").join(",")})`
+      );
+      params.push(...organization_ids);
+    }
 
-      if (organization_id) {
-        if (group_id) query += " AND";
-        query += " g.organization_id = ?";
-        params.push(organization_id);
-      }
+    if (conditions.length > 0) {
+      query += " WHERE " + conditions.join(" AND ");
     }
 
     return runQuery(query, params);
@@ -62,11 +68,12 @@ const GroupPermissionsModel = {
           [values] // Note the array wrapping the values
         );
       }
-      
-      return {
-        affectedRows: data.added_permissions.length + (data.removed_permissions ? data.removed_permissions.length : 0),
-      };
 
+      return {
+        affectedRows:
+          data.added_permissions.length +
+          (data.removed_permissions ? data.removed_permissions.length : 0),
+      };
     });
   },
   delete: (group_id) => {

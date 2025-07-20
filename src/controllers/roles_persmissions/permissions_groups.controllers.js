@@ -14,7 +14,7 @@ const PermissionGroupController = {
   view: async (req, res) => {
     const bookId = req.query.id;
    
-    const result = await GroupPermissionsModel.view(bookId,req.organization_id);
+    const result = await GroupPermissionsModel.view(bookId,req.organization_ids);
     if (result.error) {
       return res.status(404).json({ error: result.message });
     }

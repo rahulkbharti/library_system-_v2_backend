@@ -14,7 +14,7 @@ const SeatController = {
   view: async (req, res) => {
     const seat_id = req.query.id;
    
-    const result = await SeatsModel.view(seat_id,req.organization_id);
+    const result = await SeatsModel.view(seat_id,req.organization_ids);
     if (result.error) {
       return res.status(404).json({ error: result.message });
     }
