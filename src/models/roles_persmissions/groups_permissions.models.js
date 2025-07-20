@@ -11,7 +11,7 @@ const GroupPermissionsModel = {
     return runQuery(query, values);
   },
   view: (group_id, organization_id = null) => {
-    let query = "select gp.*, g.organization_id from group_permissions gp inner join groups g on g.id = gp.group_id ";
+    let query = "select gp.*, g.organization_id from group_permissions gp inner join `groups` g on g.id = gp.group_id ";
     const params = [];
 
     if (group_id || organization_id) {
