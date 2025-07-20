@@ -9,7 +9,7 @@ const BookCopyModel = {
         return runQuery(query, values);
     },
     view: (copy_id, organization_id = null) => {
-        let query = "SELECT * FROM book_copies";
+        let query = "SELECT book_copies.*, books.title as book_title FROM book_copies inner join books on book_copies.book_id = books.book_id";
         const params = [];
 
         if (copy_id || organization_id) {

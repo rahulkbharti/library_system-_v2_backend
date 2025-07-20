@@ -5,11 +5,11 @@ const GroupModel = {
     create : (data)=>{
     const keys = Object.keys(data);
     const values = Object.values(data);
-        const query = `INSERT INTO groups (${keys.join(", ")}) VALUES (${keys.map(() => "?").join(", ")})`;
+        const query = `INSERT INTO \`groups\` (${keys.join(", ")}) VALUES (${keys.map(() => "?").join(", ")})`;
     return runQuery(query, values);
   },
   view: (id, organization_id = null) => {
-    let query = "SELECT * FROM groups";
+    let query = "SELECT * FROM `groups`";
     const params = [];
 
     if (id || organization_id) {
@@ -38,14 +38,14 @@ const GroupModel = {
       if (!keys.length) {
         throw new Error("No update fields provided");
       }
-            const query = `UPDATE groups SET ${keys.map(key => `${key} = ?`).join(", ")} WHERE id = ?`;
+            const query = `UPDATE \`groups\` SET ${keys.map(key => `${key} = ?`).join(", ")} WHERE id = ?`;
       const result = await runQuery(query, [...values, id]);
 
       return result;
     });
   },
   delete: (id) => {
-    return runQuery(`DELETE FROM groups WHERE id = ?`, [id]);
+    return runQuery(`DELETE FROM \`groups\` WHERE id = ?`, [id]);
     }
 }
 
