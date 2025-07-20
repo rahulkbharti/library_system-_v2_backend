@@ -9,7 +9,7 @@ const SeatController = {
     }
     return res
       .status(201)
-      .json({ message: "Seat added successfully", book: result });
+      .json({ message: "Seat added successfully", seat: result });
   },
   view: async (req, res) => {
     const seat_id = req.query.id;
@@ -22,7 +22,7 @@ const SeatController = {
       return res.status(404).json({ mess: "No Seat found" });
     }
     if(seat_id) return res.status(200).json({...result[0] });
-    return res.status(200).json({ books: result});
+    return res.status(200).json({ seats: result});
   },
   update: async (req, res) => {
     const bookData = req.body;

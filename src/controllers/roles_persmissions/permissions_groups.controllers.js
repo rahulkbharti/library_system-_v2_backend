@@ -21,7 +21,7 @@ const PermissionGroupController = {
     if(result.length === 0) {
       return res.status(404).json({ message: "No Group Permission found" });
     }
-    if(bookId) return res.status(200).json({...result[0] });
+    // if(bookId) return res.status(200).json({...result[0] });
     return res.status(200).json({ groups: result});
   },
   update: async (req, res) => {
@@ -30,8 +30,10 @@ const PermissionGroupController = {
       return res.status(400).json({ error: "Group Permission ID is required for update" });
     }
     const result = await GroupPermissionsModel.update(data);
+
     if (result.error) {
-      return res.status(500).json({ error: result.message });
+      // console.error("Error updating group permissions:", result.error);
+      return res.status(403).json({ error: result.error });
     }
     if(result.affectedRows === 0){
         return res.status(404).json({ error: "Group Permission not found" });

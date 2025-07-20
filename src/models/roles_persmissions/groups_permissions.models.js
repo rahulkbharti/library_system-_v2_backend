@@ -33,24 +33,47 @@ const GroupPermissionsModel = {
   },
   update: (data) => {
     return RunTransaction(async (connection) => {
-      const { update, group_id } = data;
-      const keys = Object.keys(update);
-      const values = Object.values(update);
-
-      if (!keys.length) {
-        throw new Error("No update fields provided");
+      // console.log("Data to update:", data);
+      // Return dummy data for testing purposes
+      if (data.removed_permissions && data.removed_permissions.length > 0) {
+        // Create a string of comma-separated question marks for each permission
+        const placeholders = data.removed_permissions.map(() => "?").join(",");
+        const query = `DELETE FROM group_permissions WHERE group_id = ? AND permission_id IN (${placeholders})`;
+        // console.log("Query to execute:", query);
+        // Spread the parameters - group_id first, then each permission_id
+        await connection.query(
+          query,
+          [data.group_id, ...data.removed_permissions] // Note the spread operator here
+        );
       }
-      const query = `UPDATE group_permissions SET ${keys
-        .map((key) => `${key} = ?`)
-        .join(", ")} WHERE group_id = ?`;
-      const result = await runQuery(query, [...values, group_id]);
+      if (data.added_permissions && data.added_permissions.length > 0) {
+        const query =
+          "INSERT INTO group_permissions (group_id, permission_id) VALUES ?";
 
-      return result;
+        // Create array of arrays for bulk insert
+        const values = data.added_permissions.map((permission_id) => [
+          data.group_id,
+          permission_id,
+        ]);
+
+        // Execute the query with proper parameters
+        await connection.query(
+          query,
+          [values] // Note the array wrapping the values
+        );
+      }
+      
+      return {
+        affectedRows: data.added_permissions.length + (data.removed_permissions ? data.removed_permissions.length : 0),
+      };
+
     });
   },
   delete: (group_id) => {
-        return runQuery(`DELETE FROM group_permissions WHERE group_id = ?`, [group_id]);
-    }
-}
+    return runQuery(`DELETE FROM group_permissions WHERE group_id = ?`, [
+      group_id,
+    ]);
+  },
+};
 
 export default GroupPermissionsModel;
