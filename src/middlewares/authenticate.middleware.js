@@ -15,9 +15,9 @@ const getSecretKey = () => {
 const authenticate = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
-    
+
     if (!authHeader?.startsWith('Bearer ')) {
-      return res.status(401).json({ 
+      return res.status(401).json({
         error: 'Authentication required',
         code: 'MISSING_TOKEN'
       });
@@ -25,12 +25,14 @@ const authenticate = async (req, res, next) => {
 
     const token = authHeader.slice(7);
     const decoded = jwt.verify(token, getSecretKey());
-    
+
     // Attach user to request
     req.user = decoded;
     req.organization_ids = decoded.organization_ids;
-    console.log("req.organization_ids:",   req.organization_ids);
-    
+
+    console.log("req.user:", req.user);
+    console.log("req.organization_ids:", req.organization_ids);
+
     next();
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
@@ -39,7 +41,7 @@ const authenticate = async (req, res, next) => {
         code: 'TOKEN_EXPIRED'
       });
     }
-    
+
     if (error.name === 'JsonWebTokenError') {
       return res.status(400).json({
         error: 'Invalid token',

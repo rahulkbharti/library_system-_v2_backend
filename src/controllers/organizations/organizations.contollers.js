@@ -19,7 +19,7 @@ const OrganizationController = {
       return res.status(404).json({ error: result.message });
     }
     if (result.length === 0) {
-      return res.status(404).json({ mess: "No Organization found" });
+      return res.status(404).json({ message: "No Organization found" });
     }
     // if(created_by_admin) return res.status(200).json({...result[0] });
     return res.status(200).json({ organizations: result });

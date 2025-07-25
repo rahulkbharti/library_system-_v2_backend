@@ -13,16 +13,18 @@ const GroupController = {
   },
   view: async (req, res) => {
     const bookId = req.query.id;
-   
-    const result = await GroupModel.view(bookId,req.organization_ids);
+    if (!req.organization_ids || req.organization_ids.length === 0) {
+      return res.status(400).json({ error: "No Organization Found" });
+    }
+    const result = await GroupModel.view(bookId, req.organization_ids);
     if (result.error) {
       return res.status(404).json({ error: result.message });
     }
-    if(result.length === 0) {
+    if (result.length === 0) {
       return res.status(404).json({ mess: "No Group found" });
     }
-    if(bookId) return res.status(200).json({...result[0] });
-    return res.status(200).json({ groups: result});
+    if (bookId) return res.status(200).json({ ...result[0] });
+    return res.status(200).json({ groups: result });
   },
   update: async (req, res) => {
     const data = req.body;
@@ -33,24 +35,24 @@ const GroupController = {
     if (result.error) {
       return res.status(500).json({ error: result.message });
     }
-    if(result.affectedRows === 0){
-        return res.status(404).json({ error: "Group not found" });
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Group not found" });
     }
     return res
       .status(200)
       .json({ message: "Group updated successfully", book: result });
   },
-  delete: async (req,res)=>{
-     const id = req.query.id;
+  delete: async (req, res) => {
+    const id = req.query.id;
     //  console.log("Book ID to delete:", id);
-     const result = await GroupModel.delete(id);
-     if(result.error) {
-       return res.status(500).json({ error: result.message });
-     }
-     if(result.affectedRows === 0) {
-       return res.status(404).json({ error: "Group not found" });
-     }
-     return res.status(200).json({ message: "Group deleted successfully", id });
+    const result = await GroupModel.delete(id);
+    if (result.error) {
+      return res.status(500).json({ error: result.message });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Group not found" });
+    }
+    return res.status(200).json({ message: "Group deleted successfully", id });
   }
 };
 

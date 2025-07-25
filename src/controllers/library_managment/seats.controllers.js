@@ -13,7 +13,9 @@ const SeatController = {
   },
   view: async (req, res) => {
     const seat_id = req.query.id;
-
+    if (!req.organization_ids || req.organization_ids.length === 0) {
+      return res.status(400).json({ error: "No Organization Found" });
+    }
     const result = await SeatsModel.view(seat_id, req.organization_ids);
     if (result.error) {
       return res.status(404).json({ error: result.message });

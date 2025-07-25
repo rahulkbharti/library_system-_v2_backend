@@ -8,6 +8,7 @@ const BookCopyModel = {
     const query = `INSERT INTO book_copies (${keys.join(", ")}) VALUES (${keys
       .map(() => "?")
       .join(", ")})`;
+    // console.log("BookCopyModel.create query:", query, "values:", values);
     return runQuery(query, values);
   },
   view: (copy_id, organization_ids = []) => {
@@ -36,6 +37,7 @@ const BookCopyModel = {
     }
 
     query += " ORDER BY book_copies.copy_id DESC";
+    // console.log("BookCopyModel.view query:", query, "params:", params);
     return runQuery(query, params);
   },
   update: (data) => {

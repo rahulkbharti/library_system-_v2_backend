@@ -20,23 +20,23 @@ const SeatsReservations = {
     const conditions = [];
 
     if (reservation_id) {
-        conditions.push("sr.reservation_id = ?");
-        params.push(reservation_id);
+      conditions.push("sr.reservation_id = ?");
+      params.push(reservation_id);
     }
 
     if (organization_ids.length > 0) {
-        // Create placeholders for each organization_id (?,?,?)
-        const placeholders = organization_ids.map(() => "?").join(",");
-        conditions.push(`s.organization_id IN (${placeholders})`);
-        params.push(...organization_ids);
+      // Create placeholders for each organization_id (?,?,?)
+      const placeholders = organization_ids.map(() => "?").join(",");
+      conditions.push(`s.organization_id IN (${placeholders})`);
+      params.push(...organization_ids);
     }
 
     if (conditions.length > 0) {
-        query += " WHERE " + conditions.join(" AND ");
+      query += " WHERE " + conditions.join(" AND ");
     }
 
     return runQuery(query, params);
-},
+  },
   update: (data) => {
     return RunTransaction(async (connection) => {
       const { update, reservation_id } = data;

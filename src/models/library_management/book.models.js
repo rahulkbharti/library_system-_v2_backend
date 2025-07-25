@@ -10,12 +10,22 @@ const BooksModel = {
       .join(", ")})`;
     return runQuery(query, values);
   },
-  view: (book_id, organization_id = null) => {
+  view: (book_id, organization_ids = []) => {
     let query = "select * from books";
     const params = [];
     if (book_id) {
       query += " WHERE book_id = ?";
       params.push(book_id);
+    }
+    if (organization_ids.length > 0) {
+      const placeholders = organization_ids.map(() => "?").join(",");
+      if (book_id) {
+        query += " AND ";
+      } else {
+        query += " WHERE ";
+      }
+      query += `organization_id IN (${placeholders})`;
+      params.push(...organization_ids);
     }
     return runQuery(query, params);
   },

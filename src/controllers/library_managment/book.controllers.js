@@ -13,16 +13,18 @@ const BookControllers = {
   },
   view: async (req, res) => {
     const bookId = req.query.id;
-   
-    const result = await BooksModel.view(bookId,req.organization_ids);
+    if (!req.organization_ids || req.organization_ids.length === 0) {
+      return res.status(400).json({ error: "No Organization Found" });
+    }
+    const result = await BooksModel.view(bookId, req.organization_ids);
     if (result.error) {
       return res.status(404).json({ error: result.message });
     }
-    if(result.length === 0) {
+    if (result.length === 0) {
       return res.status(404).json({ mess: "No books found" });
     }
-    if(bookId) return res.status(200).json({...result[0] });
-    return res.status(200).json({ books: result});
+    if (bookId) return res.status(200).json({ ...result[0] });
+    return res.status(200).json({ books: result });
   },
   update: async (req, res) => {
     const bookData = req.body;
@@ -33,24 +35,24 @@ const BookControllers = {
     if (result.error) {
       return res.status(500).json({ error: result.message });
     }
-    if(result.affectedRows === 0){
-        return res.status(404).json({ error: "Book not found" });
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Book not found" });
     }
     return res
       .status(200)
       .json({ message: "Book updated successfully", book: result });
   },
-  delete: async (req,res)=>{
-     const book_id = req.query.id;
-     console.log("Book ID to delete:", book_id);
-     const result = await BooksModel.delete(book_id);
-     if(result.error) {
-       return res.status(500).json({ error: result.message });
-     }
-     if(result.affectedRows === 0) {
-       return res.status(404).json({ error: "Book not found" });
-     }
-     return res.status(200).json({ message: "Book deleted successfully", book_id });
+  delete: async (req, res) => {
+    const book_id = req.query.id;
+    console.log("Book ID to delete:", book_id);
+    const result = await BooksModel.delete(book_id);
+    if (result.error) {
+      return res.status(500).json({ error: result.message });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Book not found" });
+    }
+    return res.status(200).json({ message: "Book deleted successfully", book_id });
   }
 };
 
